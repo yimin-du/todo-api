@@ -1,23 +1,12 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var PORT = process.env.PORT || 3000;
 
-var todos = [
-	{ 	id: 1,
-		task: 'pick up alex',
-		completed: false
-	},
-	{ 	id: 2,
-		task: 'feed the cat',
-		completed: true
-	},
-	{ 	id: 3,
-		task: 'buy milk',
-		completed: false
-	}
+var todos = [];
+var todoNextId = 1;
 
-
-];
+app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
 	res.send("Todo App!");
@@ -35,6 +24,14 @@ app.get('/todos/:id', function(req, res) {
 		}
 	});
 	res.status(404).send();
+});
+
+app.post('/todos', function(req, res) {
+	console.log("posting to server:");
+	var todo = req.body;
+	todo.id = todoNextId++;
+	todos.push(todo);
+	res.send(todos);
 });
 
 app.listen(PORT, function() {
