@@ -42,6 +42,21 @@ app.post('/todos', function(req, res) {
 	res.json(todos);
 });
 
+app.delete('/todos/:id', function(req, res) {
+	var id = parseInt(req.params.id);
+	var index = -1;
+	todos.forEach(function(todo, i) {
+		if(id === todo.id)	index = i;
+	});
+	if(index > -1){
+		todos.splice(index, 1);
+		res.send(200);
+	}
+	else {
+		res.send(404);
+	}
+});
+
 app.listen(PORT, function() {
 	console.log("express is listening on port " + PORT + "!");
 });
