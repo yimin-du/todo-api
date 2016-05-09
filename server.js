@@ -15,6 +15,19 @@ app.get('/', function(req, res) {
 });
 
 app.get('/todos', function(req, res) {
+	var params = req.query;
+	var filtered = [];
+	console.log(params);
+	if(params.hasOwnProperty('completed')) {
+		if(params.completed === 'true') {
+			filtered = _.where(todos, { completed: true });
+		} else {
+			filtered = _.where(todos, { completed: false });
+		}
+		res.json(filtered);
+		return;
+	} 
+
 	res.json(todos);
 });
 
@@ -55,6 +68,20 @@ app.delete('/todos/:id', function(req, res) {
 	else {
 		res.send(404);
 	}
+});
+
+app.put('/todos/:id', function(req, res) {
+	var id = parseInt(req.params.id);
+	todos.forEach(function(todo) {
+		if(todo.id === id) {
+			if(todo.hasOwnProperty('description') && _.isString(todo.description))
+				todo.description = req.body.description;
+			if(todo.hasOwnProperty('completed') && _.isBoolean(todo.completed))
+				todo.completed = req.body.completed;
+			res.send(200);
+		}
+	});
+	res.send(400);
 });
 
 app.listen(PORT, function() {
